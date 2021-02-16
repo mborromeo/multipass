@@ -41,5 +41,9 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<ezcrypto>.freeze, [">= 0"])
   end
+
+  s.add_development_dependency 'bundler', '~> 2.2'
+  s.add_development_dependency 'rake', '~> 13.0'
+  s.add_development_dependency 'test-unit', '~> 3.4'
 end
 

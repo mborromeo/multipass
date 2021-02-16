@@ -1,6 +1,7 @@
 require 'time'
 require 'ezcrypto'
 require 'base64'
+require 'json'
 
 class MultiPass
   class Invalid < StandardError
@@ -100,11 +101,7 @@ class MultiPass
 
   CipherError = OpenSSL.const_defined?(:CipherError) ? OpenSSL::CipherError : OpenSSL::Cipher::CipherError
 
-  if defined?(::ActiveSupport) && defined?(::ActiveSupport::Base64)
-    include ::ActiveSupport::Base64
-  else
-    require 'base64'
-  end
+  require 'base64'
 
   # converts unicode (\u003c) to the actual character
   # http://rishida.net/tools/conversion/
@@ -143,18 +140,9 @@ class MultiPass
     Base64.decode64(s)
   end
 
-  if Object.const_defined?(:ActiveSupport)
-    def decode_json(data, s)
-      ActiveSupport::JSON.decode(s)
-    rescue ActiveSupport::JSON.parse_error
-      raise MultiPass::JSONError.new(data, s)
-    end
-  else
-    require 'json'
-    def decode_json(data, s)
-      JSON.parse(s)
-    rescue JSON::ParserError
-      raise MultiPass::JSONError.new(data, s)
-    end
+  def decode_json(data, s)
+    JSON.parse(s)
+  rescue JSON::ParserError
+    raise MultiPass::JSONError.new(data, s)
   end
 end
